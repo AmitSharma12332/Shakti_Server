@@ -98,6 +98,9 @@ const withdrawalRequest = TryCatch(async (req, res, next) => {
   const requester = await User.findById(req.user).lean();
   if (!requester) return next(new ErrorHandler("User not found", 404));
 
+  if (requester.status === "banned")
+    return next(new ErrorHandler("You can't perform this action", 400));
+
   if (!amount || !accNo || !ifsc || !contact || !bankName || !receiverName)
     return next(new ErrorHandler("All fields are required", 400));
 
@@ -116,7 +119,7 @@ const withdrawalRequest = TryCatch(async (req, res, next) => {
   let parentUser;
   if (requester.role === "user") {
     parentUser = requester.parentUser;
-  } else if (requester.role === "admin") {
+  } else if (requester.role === "master") {
     parentUser = requester.parentUser;
   } else {
     return next(new ErrorHandler("Unauthorized access", 403));
@@ -166,7 +169,7 @@ const changeWithdrawStatus = TryCatch(async (req, res, next) => {
   const withdrawUser = await User.findById(withdrawRecord.userId);
   if (!withdrawUser) return next(new ErrorHandler("Requester not found", 404));
 
-  if (user.role === "admin") {
+  if (user.role === "master") {
     if (withdrawUser.parentUser.toString() !== user._id.toString()) {
       return next(
         new ErrorHandler("Unauthorized to approve this withdrawal", 403)
