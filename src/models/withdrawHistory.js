@@ -12,11 +12,20 @@ const schema = new Schema(
       required: true,
       ref: "User",
     },
-    accNo: {
+    userName: {
       type: String,
       required: true,
     },
-    ifsc: {
+    accountNumber: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    ifscCode: {
+      type: String,
+      required: true,
+    },
+    accountHolderName: {
       type: String,
       required: true,
     },
@@ -24,12 +33,8 @@ const schema = new Schema(
       type: String,
       required: true,
     },
-    receiverName: {
-      type: String,
-      required: true,
-    },
     contact: {
-      type: String,
+      type: Number,
       required: true,
       match: [/^\d{10}$/, "Invalid contact number"],
     },
