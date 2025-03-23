@@ -135,6 +135,11 @@ const placeBet = TryCatch(async (req, res, next) => {
     }
   }
 
+    if (user.amount - exposure < Math.abs(loss))
+    return next(new ErrorHandler("Insufficient balance", 400));
+
+  
+
   const newBet = await Bet.create({
     userId: user._id,
     eventId,
