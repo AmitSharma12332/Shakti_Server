@@ -386,7 +386,7 @@ const getBets = TryCatch(async (req, res, next) => {
 const changeBetStatus = TryCatch(async (req, res, next) => {
   const { betId, status } = req.body;
 
-  const validStatuses = ["won", "lost", "pending"];
+  const validStatuses = ["won", "lost", "pending", "cancelled"];
   if (!validStatuses.includes(status)) {
     return next(new ErrorHandler("Invalid status value", 400));
   }
@@ -400,7 +400,7 @@ const changeBetStatus = TryCatch(async (req, res, next) => {
     );
 
   const allowedTransitions = {
-    pending: ["won", "lost"],
+    pending: ["won", "lost", "cancelled"],
     won: ["lost"],
     lost: ["won"],
   };
